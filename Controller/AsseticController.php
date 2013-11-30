@@ -67,6 +67,13 @@ class AsseticController
         $response = $this->createResponse();
         $response->setExpires(new \DateTime());
 
+        // Content-type
+        if (!$response->headers->has('content-type')) {
+            $extension = pathinfo($asset->getTargetPath(), PATHINFO_EXTENSION);
+            $contentType = $this->request->getMimeType($extension);
+            $response->headers->set('Content-Type', $contentType);
+        }
+
         // last-modified
         if (null !== $lastModified = $this->am->getLastModified($asset)) {
             $date = new \DateTime();
